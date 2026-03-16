@@ -13,6 +13,8 @@ class TileType(IntEnum):
 
 # Maps TileType → tile index in the sprite atlas.
 # Index 0 = first tile, laid out left-to-right, top-to-bottom.
+# These values are used as fallback defaults; the authoritative mapping is
+# in the "tiles" section of assets/sprites/atlas.json.
 TILE_SPRITE: dict[TileType, int] = {
     TileType.WALL: 0,
     TileType.FLOOR: 1,

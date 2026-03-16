@@ -3,6 +3,11 @@
   "tileSize": 32,
   "tilesPerRow": 4,
   "defaultFps": 8,
+  "tiles": {
+    "wall": 0,
+    "floor": 1,
+    "stairs": 2
+  },
   "sprites": {
     "player": {
       "walk": {

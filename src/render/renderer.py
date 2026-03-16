@@ -54,7 +54,8 @@ class Renderer:
 
     def draw_tile(self, tile_type, x: int, y: int) -> None:
         """Draw a map tile at tile coordinates (x, y)."""
-        tile_index = TILE_SPRITE.get(tile_type, 0)
+        fallback = TILE_SPRITE.get(tile_type, 0)
+        tile_index = self.animation_db.get_tile_sprite(tile_type.name.lower(), fallback)
         surface = self.spritesheet.get_tile_surface(tile_index)
         self.screen.blit(surface, (x * TILE, y * TILE))
 
