@@ -36,6 +36,10 @@ class AnimationDB:
         self.tile_size: int = data.get("tileSize", 32)
         self.tiles_per_row: int = data.get("tilesPerRow", 8)
         self.default_fps: float = float(data.get("defaultFps", 8.0))
+        # tile_sprites["wall"] = 0, ["floor"] = 1, etc.
+        self._tile_sprites: dict[str, int] = {
+            k.lower(): int(v) for k, v in data.get("tiles", {}).items()
+        }
         # sprites[sprite_key][anim][facing] = list[int]
         self._db: dict[str, dict[str, dict[str, list[int]]]] = {}
         # fps overrides per (sprite_key, anim)
@@ -80,3 +84,10 @@ class AnimationDB:
 
     def get_fps(self, sprite_key: str, anim: str) -> float:
         return self._fps.get((sprite_key, anim), self.default_fps)
+
+    def get_tile_sprite(self, tile_name: str, default: int = 0) -> int:
+        """Return the atlas tile index for a map tile type name (e.g. "wall", "floor", "stairs").
+
+        Falls back to *default* when the name is not found in the ``tiles`` section of atlas.json.
+        """
+        return self._tile_sprites.get(tile_name.lower(), default)

@@ -33,7 +33,25 @@ Formula: `tile_index = row * tilesPerRow + column`  (both 0-based)
 | `tileSize` | int | Width **and** height of one tile in pixels (tiles must be square). |
 | `tilesPerRow` | int | How many tiles fit in one row of the PNG. |
 | `defaultFps` | number | Fallback animation speed used when an animation does not set its own `fps`. |
+| `tiles` | object | Map of **tile type names** → atlas tile index (see below). |
 | `sprites` | object | Map of **sprite keys** → animation definitions (see below). |
+
+#### Tile type mapping
+
+The `tiles` object maps the name of each map tile type to its zero-based index in
+the sprite atlas.  This is where you configure which tile in `atlas.png` is drawn
+for walls, floors, and stairs:
+
+```json
+"tiles": {
+  "wall":   0,
+  "floor":  1,
+  "stairs": 2
+}
+```
+
+Valid tile type names are `"wall"`, `"floor"`, and `"stairs"` (case-insensitive).
+Use the same index formula as for sprites: `row * tilesPerRow + column`.
 
 #### Sprite / animation structure
 
