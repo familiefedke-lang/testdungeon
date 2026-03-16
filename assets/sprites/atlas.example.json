@@ -1,0 +1,17 @@
+{
+  "_comment": "Example atlas for a tilesheet where rows 1-4 contain the 4-frame walk cycle for each facing direction. Set tilesPerRow to the number of columns in your PNG and update the tile indices accordingly. See README.md for the full format reference.",
+  "tileSize": 32,
+  "tilesPerRow": 4,
+  "defaultFps": 8,
+  "sprites": {
+    "player": {
+      "walk": {
+        "S": [0, 1, 2, 3],
+        "N": [4, 5, 6, 7],
+        "E": [8, 9, 10, 11],
+        "W": [12, 13, 14, 15],
+        "fps": 8
+      }
+    }
+  }
+}
