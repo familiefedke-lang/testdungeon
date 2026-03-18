@@ -1,6 +1,94 @@
 # testdungeon
 
-A sprite-based roguelike written in Python/pygame.
+A sprite-based roguelike available in two implementations:
+
+| Implementation | Language | Engine | Entry point |
+|---|---|---|---|
+| **Python** (original) | Python 3 + pygame | pygame | `python -m src.main` |
+| **Godot port** | GDScript | Godot 4.5 | open `godot/` in the Godot editor |
+
+---
+
+## Godot 4.5 port (`godot/`)
+
+### Quick start
+
+1. Install [Godot 4.5](https://godotengine.org/download).
+2. Open the Godot editor, choose **Import**, and select the `godot/` folder.
+3. Press **F5** (or the play button) to run.
+
+### Godot project structure
+
+```
+godot/
+├── project.godot                  # Godot project configuration
+├── icon.svg
+├── scenes/
+│   └── main.tscn                  # Root scene (Main + Renderer nodes)
+├── scripts/
+│   ├── autoloads/
+│   │   └── Constants.gd           # Global constants (replaces constants.py)
+│   ├── ecs/
+│   │   ├── Entity.gd              # Base entity
+│   │   ├── Actor.gd               # Entity with Fighter + Sprite + AI
+│   │   ├── Item.gd                # Ground item entity
+│   │   └── components/
+│   │       ├── Fighter.gd         # HP / power component
+│   │       ├── SpriteComponent.gd # Animation state machine
+│   │       ├── BasicAI.gd         # Greedy enemy AI
+│   │       ├── InventoryComponent.gd
+│   │       └── EquipmentComponent.gd
+│   ├── world/
+│   │   ├── GameMap.gd             # Tile grid + entity list
+│   │   └── Procgen.gd             # Room-and-corridor generator
+│   ├── render/
+│   │   ├── Renderer.gd            # Node2D – draws via _draw()
+│   │   ├── AnimationDB.gd         # Loads atlas.json frame lists
+│   │   └── ItemsAtlas.gd          # Loads items.atlas.json
+│   ├── input/
+│   │   └── InputHandler.gd        # InputEvent → Command objects
+│   ├── data/
+│   │   ├── EnemiesDB.gd           # Loads enemies.json
+│   │   └── ItemsDB.gd             # Loads items.json
+│   ├── GameEngine.gd              # Turn resolution + game state
+│   └── Game.gd                    # Main scene script (game loop)
+└── assets/                        # Copies of sprites + data JSON files
+```
+
+### Architecture mapping (Python → GDScript)
+
+| Python module | GDScript equivalent | Notes |
+|---|---|---|
+| `src/main.py` + `src/game.py` | `scripts/Game.gd` | `_ready()` bootstraps; `_process()` is the loop |
+| `src/engine.py` `Engine` | `scripts/GameEngine.gd` | Renamed – `Engine` is a Godot built-in |
+| `src/constants.py` | `scripts/autoloads/Constants.gd` | Autoloaded singleton |
+| `src/ecs/entity.py` | `scripts/ecs/Entity.gd` + `Actor.gd` | `RefCounted` (auto-GC) |
+| `src/ecs/item.py` | `scripts/ecs/Item.gd` | |
+| `src/ecs/components/*.py` | `scripts/ecs/components/*.gd` | Direct 1-to-1 translation |
+| `src/world/game_map.py` | `scripts/world/GameMap.gd` | `TileType` as inner enum |
+| `src/world/procgen.py` | `scripts/world/Procgen.gd` | `Room` as inner class |
+| `src/world/tiles.py` | `GameMap.TileType` enum + `WALKABLE` const | Merged into `GameMap.gd` |
+| `src/render/renderer.py` | `scripts/render/Renderer.gd` | Node2D with `_draw()` |
+| `src/render/animations.py` | `scripts/render/AnimationDB.gd` | |
+| `src/render/spritesheet.py` | Inlined into `Renderer._blit_from_atlas()` | No separate class needed |
+| `src/render/items_atlas.py` | `scripts/render/ItemsAtlas.gd` | |
+| `src/input/input_handler.py` | `scripts/input/InputHandler.gd` | Command inner class |
+| `src/data/enemies_db.py` | `scripts/data/EnemiesDB.gd` | |
+| `src/data/items_db.py` | `scripts/data/ItemsDB.gd` | |
+
+### Controls (unchanged from Python version)
+
+| Key | Action |
+|---|---|
+| Arrow keys / HJKL / Numpad | Move / attack |
+| Numpad 7/9/1/3 | Diagonal movement |
+| `.` / Numpad 5 | Use stairs / wait |
+| `E` | Pick up item |
+| `Escape` / `Q` | Quit |
+
+---
+
+## Python version (`src/`)
 
 ---
 
