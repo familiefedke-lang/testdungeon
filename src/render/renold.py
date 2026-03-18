@@ -60,28 +60,6 @@ class Renderer:
         pygame.display.flip()
 
     # ------------------------------------------------------------------
-    # UI primitives
-    # ------------------------------------------------------------------
-
-    def draw_panel(
-        self,
-        px: int,
-        py: int,
-        w: int,
-        h: int,
-        *,
-        bg: tuple[int, int, int] = (0, 0, 0),
-        border: tuple[int, int, int] | None = (80, 80, 100),
-        alpha: int = 170,
-    ) -> None:
-        """Draw a semi-transparent rectangular panel in pixel coordinates."""
-        surf = pygame.Surface((w, h), pygame.SRCALPHA)
-        surf.fill((bg[0], bg[1], bg[2], alpha))
-        self.screen.blit(surf, (px, py))
-        if border is not None:
-            pygame.draw.rect(self.screen, border, (px, py, w, h), 1)
-
-    # ------------------------------------------------------------------
     # Tile drawing
     # ------------------------------------------------------------------
 

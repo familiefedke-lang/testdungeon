@@ -14,7 +14,6 @@ Returns (game_map, player_start_x, player_start_y).
 
 from __future__ import annotations
 
-import os
 import random
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
@@ -24,7 +23,9 @@ from src.world.game_map import GameMap
 from src.world.tiles import TileType
 from src.ecs.entity import Actor
 from src.ecs.item import Item
-from src.data.enemies_db import EnemiesDB
+from src.ecs.components.fighter import Fighter
+from src.ecs.components.sprite import SpriteComponent
+from src.ecs.components.ai import BasicAI
 
 if TYPE_CHECKING:
     pass
@@ -95,11 +96,6 @@ def generate_floor(
     """
     if rng is None:
         rng = random.Random()
-
-    # Load enemies DB (relative to repo root)
-    repo_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    enemies_path = os.path.join(repo_root, "assets", "data", "enemies.json")
-    enemies_db = EnemiesDB(enemies_path)
 
     game_map = GameMap()
 
@@ -190,7 +186,7 @@ def generate_floor(
         game_map.entities.append(Item(ax, ay, item_key="body_armour", name="body armour"))
 
     # ------------------------------------------------------------------
-    # Spawn enemies in rooms other than start (data-driven)
+    # Spawn enemies in rooms other than start
     # ------------------------------------------------------------------
     enemy_rooms = rooms[1:] if len(rooms) > 1 else []
     for room in enemy_rooms:
@@ -206,8 +202,20 @@ def generate_floor(
                 break
             ex, ey = rng.choice(candidates)
             occupied.add((ex, ey))
-
-            enemy: Actor = enemies_db.create_actor("goblin", ex, ey, floor=floor)
+            enemy = _make_enemy(ex, ey, floor, rng)
             game_map.entities.append(enemy)
 
     return game_map, start_x, start_y
+
+
+def _make_enemy(x: int, y: int, floor: int, rng: random.Random) -> Actor:
+    """Create a goblin enemy scaled (slightly) to the floor number."""
+    hp = 8 + floor * 2
+    power = 2 + floor
+    return Actor(
+        x, y,
+        fighter=Fighter(hp=hp, power=power),
+        sprite=SpriteComponent("goblin", anim="idle", facing="S"),
+        ai=BasicAI(),
+        name="goblin",
+    )

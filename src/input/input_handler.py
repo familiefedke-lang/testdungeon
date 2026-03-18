@@ -28,11 +28,17 @@ class UseStairs:
 
 
 @dataclass(frozen=True)
+class Pickup:
+    """Pick up an item on the current tile."""
+    pass
+
+
+@dataclass(frozen=True)
 class Quit:
     pass
 
 
-Command = Move | UseStairs | Quit
+Command = Move | UseStairs | Pickup | Quit
 
 
 # ---------------------------------------------------------------------------
@@ -77,6 +83,10 @@ class InputHandler:
             if event.key in (pygame.K_PERIOD, pygame.K_KP5):
                 # > or numpad-5 → use stairs / wait
                 return UseStairs()
+
+            if event.key == pygame.K_e:
+                # pick up item
+                return Pickup()
 
             if event.key in _KEY_TO_MOVE:
                 dx, dy = _KEY_TO_MOVE[event.key]

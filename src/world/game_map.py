@@ -1,5 +1,5 @@
 """
-GameMap – owns the 50×30 tile grid and entity set for a single floor.
+GameMap – owns the 50×30 tile grid and entity list for a single floor.
 """
 
 from __future__ import annotations
@@ -21,7 +21,9 @@ class GameMap:
         ]
         # All entities currently on this floor (excludes the player,
         # which is tracked separately in Engine).
-        self.entities: set[Entity] = set()
+        #
+        # NOTE: Use a list (not a set) so entities do not need to be hashable.
+        self.entities: list["Entity"] = []
 
     # ------------------------------------------------------------------
     # Bounds helpers

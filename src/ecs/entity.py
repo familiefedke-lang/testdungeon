@@ -2,12 +2,15 @@
 Entity classes for the ECS.
 
 Entity  – base: position, blocking flag, render layer
-Actor   – Entity + Fighter + SpriteComponent + optional AI
+Actor   – Entity + Fighter + SpriteComponent + optional AI + inventory/equipment
 """
 
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
+
+from src.ecs.components.inventory import InventoryComponent
+from src.ecs.components.equipment import EquipmentComponent
 
 if TYPE_CHECKING:
     from src.ecs.components.fighter import Fighter
@@ -55,6 +58,10 @@ class Actor(Entity):
         self.ai: "BasicAI | None" = ai
         if ai is not None:
             ai.owner = self
+
+        # New: inventory + equipment
+        self.inventory = InventoryComponent()
+        self.equipment = EquipmentComponent()
 
     @property
     def is_alive(self) -> bool:

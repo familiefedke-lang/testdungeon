@@ -30,7 +30,9 @@ class BasicAI:
 
         # Adjacent: Chebyshev distance == 1  (diagonal counts)
         if max(abs(dx), abs(dy)) <= 1:
-            enemy.fighter.attack(player)
+            # Minimal: damage = enemy base power (armor system for player handled in Engine only right now)
+            damage = enemy.fighter.base_power
+            enemy.fighter.attack(player, damage)
             return
 
         # Greedy step toward player
